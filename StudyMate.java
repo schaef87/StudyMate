@@ -9,7 +9,7 @@ public class StudyMate {
 		System.out.println("Welcome to StudyMate!\n");
 		System.out.println("Created by: John Vande Noord and Justin Schaefer(USNR)\n");
 		System.out.println("Please make a selection:\n");
-		System.out.println("1. Take a Test\n2. Make/Edit a Test");//no use at this time
+		System.out.println("1. Take a Test\n2. Make/Edit a Test");
 		Scanner kybd=new Scanner(System.in);
 		int menuSelection = kybd.nextInt();
 		PrintStream out;
@@ -23,23 +23,35 @@ public class StudyMate {
 				if(list.length!=0){
 					for(int i=0;i<list.length;i++)
 						System.out.println(i+". "+list[i].getName());
-					System.out.println("Which one?");
+					System.out.println("\nWhich one?");
 					int namenum=kybd.nextInt();
+					while(namenum<0||namenum>=list.length){
+						System.out.println("Which one? Choose 0-"+(list.length-1));
+						namenum=kybd.nextInt();
+					}
 					name=list[namenum].getName();
 					list=new File(pa+"\\"+name).listFiles();
 					if(list.length!=0){
 						for(int i=0;i<list.length;i++)
 							System.out.println(i+". "+list[i].getName());
-						System.out.println("Which one?");
+						System.out.println("\nWhich one?");
 						int subnum=kybd.nextInt();
 						sub=list[subnum].getName();
+						while(subnum<0||subnum>=list.length){
+							System.out.println("Which one? Choose 0-"+(list.length-1));
+							subnum=kybd.nextInt();
+						}
 						list=new File(pa+"\\"+name+"\\"+sub).listFiles();
 						if(list.length!=0){
 							for(int i=0;i<list.length;i++)
 								System.out.println(i+". "+list[i].getName());
-							System.out.println("What chapter?");
+							System.out.println("\nWhat chapter?");
 							int chapnum=kybd.nextInt();
-							System.out.println(pa+"\\"+name+"\\"+sub+"\\"+list[chapnum]);
+							while(chapnum<0||chapnum>=list.length){
+								System.out.println("Which one? Choose 0-"+(list.length-1));
+								chapnum=kybd.nextInt();
+							}
+							takeTest(list[chapnum].getAbsoluteFile());
 						}
 					}
 				}
@@ -92,5 +104,11 @@ public class StudyMate {
 			kybd.close();out.close();
 			break;
 		}
+	}
+
+	public static void takeTest(File test){
+		ArrayList<String> questions=new ArrayList<String>();
+		Map<String, String> correct=new HashMap<String, String>();
+		Map<String, ArrayList<String>> fakes=new HashMap<String, ArrayList<String>>();
 	}
 }
