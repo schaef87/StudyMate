@@ -37,11 +37,11 @@ public class StudyMate {
 							System.out.println(i+". "+list[i].getName());
 						System.out.println("\nWhich one?");
 						int subnum=kybd.nextInt();
-						sub=list[subnum].getName();
 						while(subnum<0||subnum>=list.length){
 							System.out.println("Which one? Choose 0-"+(list.length-1));
 							subnum=kybd.nextInt();
 						}
+						sub=list[subnum].getName();
 						list=new File(pa+"\\"+name+"\\"+sub).listFiles();
 						if(list.length!=0){
 							for(int i=0;i<list.length;i++)
@@ -67,6 +67,7 @@ public class StudyMate {
 			}
 			break;
 		case 2:
+			listAll(pa);
 			do{
 				System.out.println("What is the name?");
 				name=kybd.nextLine();
@@ -112,7 +113,9 @@ public class StudyMate {
 			break;
 		}
 	}
-
+public static void listAll(File tree){
+	
+}
 	public static void takeTest(File test) throws IOException{
 		ArrayList<String> questions=new ArrayList<String>();
 		Map<String, String> correct=new HashMap<String, String>();
