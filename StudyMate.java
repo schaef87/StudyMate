@@ -11,7 +11,8 @@ public class StudyMate {
 		System.out.println("Please make a selection:\n");
 		System.out.println("1. Take a Test\n2. Make/Edit a Test");
 		Scanner kybd=new Scanner(System.in);
-		int menuSelection = kybd.nextInt();
+		int menuSelection=kybd.nextInt();
+		kybd.nextLine();
 		PrintStream out;
 		String name,sub,chapter,over;
 		File folder;
@@ -52,8 +53,14 @@ public class StudyMate {
 								chapnum=kybd.nextInt();
 							}
 							takeTest(list[chapnum].getAbsoluteFile());
+						}else{
+							System.out.println("no chapters yet");
 						}
+					}else{
+						System.out.println("no categories yet");
 					}
+				}else{
+					System.out.println("no topics yet");
 				}
 			}else{
 				System.out.println("no tests yet");
@@ -106,9 +113,11 @@ public class StudyMate {
 		}
 	}
 
-	public static void takeTest(File test){
+	public static void takeTest(File test) throws IOException{
 		ArrayList<String> questions=new ArrayList<String>();
 		Map<String, String> correct=new HashMap<String, String>();
 		Map<String, ArrayList<String>> fakes=new HashMap<String, ArrayList<String>>();
+		Scanner in=new Scanner(test);
+		
 	}
 }
