@@ -16,7 +16,7 @@ public class StudyMate {
 		PrintStream out;
 		String name,sub,chapter,over;
 		File folder;
-		File pa=new File("Quizes");
+		File pa=new File("Quizzes");
 		switch(menuSelection){
 		case 1:
 			if(pa.exists()){
@@ -67,13 +67,13 @@ public class StudyMate {
 			}
 			break;
 		case 2:
-			listAll(pa);
+			listAll(pa,0);
 			do{
 				System.out.println("What is the name?");
 				name=kybd.nextLine();
 				System.out.println("What is the subcategory?");
 				sub=kybd.nextLine();
-				folder=new File("Quizes\\"+name+"\\"+sub);
+				folder=new File("Quizzes\\"+name+"\\"+sub);
 				if(!folder.mkdirs()){
 					System.out.println("something went wrong");
 					System.exit(0);
@@ -102,7 +102,7 @@ public class StudyMate {
 					if(kybd.nextLine().equalsIgnoreCase("n"))
 						con=false;
 				}while(con);
-				out.println((fake.size()+1)+" "+ques);
+				out.println(fake.size()+" "+ques);
 				out.println(answer);
 				for(String i:fake)
 					out.println(i);
@@ -113,14 +113,43 @@ public class StudyMate {
 			break;
 		}
 	}
-public static void listAll(File tree){
-	
-}
+	public static void listAll(File tree, int space){
+		if(tree.exists()){
+			File[] names=tree.listFiles();
+			if(names.length!=0)
+				for(File j:names){
+					for(int i=0;i<space;i++)
+						System.out.print("\t");
+					System.out.println(j.getName());
+					if(j.isDirectory()){
+						listAll(j,space+1);
+					}
+				}
+			else
+				System.out.println("no tests yet");
+		}else{
+			System.out.println("no tests yet");
+		}
+	}
 	public static void takeTest(File test) throws IOException{
 		ArrayList<String> questions=new ArrayList<String>();
 		Map<String, String> correct=new HashMap<String, String>();
 		Map<String, ArrayList<String>> fakes=new HashMap<String, ArrayList<String>>();
 		Scanner in=new Scanner(test);
+		do{
+			int numfans=in.nextInt();
+			String ques=in.nextLine().substring(1);
+			questions.add(ques);
+			correct.put(ques, in.nextLine());
+			ArrayList<String> f=new ArrayList<String>();
+			for(int i=0;i<numfans;i++)
+				f.add(in.nextLine());
+			fakes.put(ques, f);
+		}while(in.hasNextInt());
 		
+//		for(String i:questions){
+//			
+//		}
+
 	}
 }
