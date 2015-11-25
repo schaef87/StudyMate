@@ -6,59 +6,98 @@ import java.io.*;
 import java.util.*;
 public class StudyMate {
 	public static void main(String[] args) throws IOException{
+		boolean cont=false;
+		PrintStream out;
+		String name,sub,chapter,over;
+		File folder;
+		int menuSelection=0;
+		File pa=new File("Quizzes");
 		System.out.println("Welcome to StudyMate!\n");
 		System.out.println("Created by: John Vande Noord and Justin Schaefer(USNR)\n");
 		System.out.println("Please make a selection:\n");
 		System.out.println("1. Take a Test\n2. Make/Edit a Test");
 		Scanner kybd=new Scanner(System.in);
-		int menuSelection=kybd.nextInt();
+		do{cont=false;
+		try{
+			menuSelection=kybd.nextInt();
+		}catch (InputMismatchException e){
+			System.out.println("Please enter a number");
+			kybd.nextLine();
+			cont=true;
+		}
+		}while(cont);
 		kybd.nextLine();
-		PrintStream out;
-		String name,sub,chapter,over;
-		File folder;
-		File pa=new File("Quizzes");
 		switch(menuSelection){
 		case 1:
 			if(pa.exists()){
 				File[] list=pa.listFiles();
 				if(list.length!=0){
+					System.out.println();
 					for(int i=0;i<list.length;i++)
 						System.out.println(i+". "+list[i].getName());
 					System.out.println("\nWhich one?");
-					int namenum=kybd.nextInt();
-					while(namenum<0||namenum>=list.length){
-						System.out.println("Which one? Choose 0-"+(list.length-1));
-						namenum=kybd.nextInt();
-					}
-					name=list[namenum].getName();
-					list=new File(pa+"\\"+name).listFiles();
-					if(list.length!=0){
-						for(int i=0;i<list.length;i++)
-							System.out.println(i+". "+list[i].getName());
-						System.out.println("\nWhich one?");
-						int subnum=kybd.nextInt();
-						while(subnum<0||subnum>=list.length){
+					do{cont=false;
+					try{
+						int namenum=kybd.nextInt();
+						while(namenum<0||namenum>=list.length){
 							System.out.println("Which one? Choose 0-"+(list.length-1));
-							subnum=kybd.nextInt();
+							namenum=kybd.nextInt();
 						}
-						sub=list[subnum].getName();
-						list=new File(pa+"\\"+name+"\\"+sub).listFiles();
+						name=list[namenum].getName();
+						list=new File(pa+"\\"+name).listFiles();
 						if(list.length!=0){
+							System.out.println();
 							for(int i=0;i<list.length;i++)
 								System.out.println(i+". "+list[i].getName());
-							System.out.println("\nWhat chapter?");
-							int chapnum=kybd.nextInt();
-							while(chapnum<0||chapnum>=list.length){
-								System.out.println("Which one? Choose 0-"+(list.length-1));
-								chapnum=kybd.nextInt();
+							System.out.println("\nWhich one?");
+							do{cont=false;
+							try{
+								int subnum=kybd.nextInt();
+								while(subnum<0||subnum>=list.length){
+									System.out.println("Which one? Choose 0-"+(list.length-1));
+									subnum=kybd.nextInt();
+								}
+								sub=list[subnum].getName();
+								list=new File(pa+"\\"+name+"\\"+sub).listFiles();
+								if(list.length!=0){
+									System.out.println();
+									for(int i=0;i<list.length;i++)
+										System.out.println(i+". "+list[i].getName());
+									System.out.println("\nWhat chapter?");
+									do{cont=false;
+									try{
+										int chapnum=kybd.nextInt();
+										while(chapnum<0||chapnum>=list.length){
+											System.out.println("Which one? Choose 0-"+(list.length-1));
+											chapnum=kybd.nextInt();
+										}
+										takeTest(list[chapnum].getAbsoluteFile(),kybd);
+									}
+									catch(InputMismatchException e){
+										System.out.println("Please enter a number");
+										cont=true;
+									}
+									}while(cont);
+								}else{
+									System.out.println("no chapters yet");
+								}
 							}
-							takeTest(list[chapnum].getAbsoluteFile());
+							catch(InputMismatchException e){
+								System.out.println("Please enter a number");
+								kybd.nextLine();
+								cont=true;
+							}
+							}while(cont);
 						}else{
-							System.out.println("no chapters yet");
+							System.out.println("no categories yet");
 						}
-					}else{
-						System.out.println("no categories yet");
 					}
+					catch(InputMismatchException e){
+						System.out.println("Please enter a number");
+						kybd.nextLine();
+						cont=true;
+					}
+					}while(cont);
 				}else{
 					System.out.println("no topics yet");
 				}
@@ -131,12 +170,14 @@ public class StudyMate {
 			System.out.println("no tests yet");
 		}
 	}
-	public static void takeTest(File test) throws IOException{
+	public static void takeTest(File test, Scanner kybd) throws IOException{
 		ArrayList<String> questions=new ArrayList<String>();
 		Map<String, String> correct=new HashMap<String, String>();
 		Map<String, ArrayList<String>> fakes=new HashMap<String, ArrayList<String>>();
+		int numcor=0;
+		boolean cont=false;
 		Scanner in=new Scanner(test);
-		do{
+		while(in.hasNextInt()){
 			int numfans=in.nextInt();
 			String ques=in.nextLine().substring(1);
 			questions.add(ques);
@@ -145,11 +186,41 @@ public class StudyMate {
 			for(int i=0;i<numfans;i++)
 				f.add(in.nextLine());
 			fakes.put(ques, f);
-		}while(in.hasNextInt());
-		
-//		for(String i:questions){
-//			
-//		}
-
+		}
+		Collections.shuffle(questions);
+		if(!questions.isEmpty())
+			for(String i:questions){
+				System.out.println(i);
+				String right=correct.get(i);
+				ArrayList<String> poss=fakes.get(i);
+				poss.add(right);
+				Collections.shuffle(poss);
+				for(int j=1;j<=poss.size();j++)
+					System.out.println(j+". "+poss.get(j-1));
+				System.out.println("\nPlease enter the number of the correct answer");
+				do{cont=false;
+				try{
+					int ans=kybd.nextInt();
+					if(poss.get(ans-1).equals(right)){
+						System.out.println("Correct\n");
+						numcor++;
+						try {
+						    Thread.sleep(1000);
+						} catch(InterruptedException ex) {
+						    Thread.currentThread().interrupt();
+						}
+					}else
+						System.out.println("Incorrect\n");
+				}	catch(InputMismatchException e){
+					System.out.println("Please enter the NUMBER of the correct answer");
+					kybd.nextLine();
+					cont=true;
+				}
+				}while(cont);
+			}
+		else
+			System.out.println("no questions");
+		System.out.println("Your score is "+numcor*100.0/questions.size());
+		in.close();
 	}
 }
