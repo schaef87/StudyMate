@@ -175,7 +175,7 @@ public class StudyMate {
       else{
          System.out.println("no tests yet");
       }
-   }
+   } //You forgot something
    public static void takeTest(File test, Scanner kybd) throws IOException{
       ArrayList<String> questions=new ArrayList<String>();
       Map<String, String> correct=new HashMap<String, String>();
